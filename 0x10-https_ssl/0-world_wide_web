@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 # This script audits DNS subdomains (www, lb-01, web-01, web-02) for a domain
+# Usage: ./0-world_wide_web domain [subdomain]
+
+# We purposely allow word-splitting when calling dig (SC2086) per task instructions.
+# shellcheck disable=SC2086
 
 print_subdomain_info() {
   local domain="$1"
   local sub="$2"
 
+  # Query DNS answer section only
   local ans
   ans=$(dig ${sub}.${domain} +noall +answer)
 
@@ -13,6 +18,7 @@ print_subdomain_info() {
     return
   fi
 
+  # Extract record type and destination using awk
   local record_type destination
   record_type=$(echo "$ans" | awk '/IN/ {for(i=1;i<=NF;i++){ if($i=="IN"){print $(i+1); exit}} }')
   destination=$(echo "$ans" | awk '/IN/ {print $NF; exit}')
