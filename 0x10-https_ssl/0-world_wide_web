@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# This script audits DNS subdomains (www, lb-01, web-01, web-02) for a domain
+
+print_subdomain_info() {
+  local domain="$1"
+  local sub="$2"
+
+  local ans
+  ans=$(dig ${sub}.${domain} +noall +answer)
+
+  if [[ -z "$ans" ]]; then
+    echo "The subdomain ${sub} is an UNKNOWN record and points to UNKNOWN"
+    return
+  fi
+
+  local record_type destination
+  record_type=$(echo "$ans" | awk '/IN/ {for(i=1;i<=NF;i++){ if($i=="IN"){print $(i+1); exit}} }')
+  destination=$(echo "$ans" | awk '/IN/ {print $NF; exit}')
+
+  echo "The subdomain ${sub} is a ${record_type} record and points to ${destination}"
+}
+
+domain="$1"
+subdomain="$2"
+
+if [[ -n "$domain" && -z "$subdomain" ]]; then
+  for s in www lb-01 web-01 web-02; do
+    print_subdomain_info "$domain" "$s"
+  done
+elif [[ -n "$domain" && -n "$subdomain" ]]; then
+  print_subdomain_info "$domain" "$subdomain"
+else
+  echo "Usage: $0 domain [subdomain]"
+  exit 1
+fi
