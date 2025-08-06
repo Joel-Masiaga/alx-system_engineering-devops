@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Installs and configures Nginx to serve "Hello World!"
 
 apt-get update
 apt-get install -y nginx
