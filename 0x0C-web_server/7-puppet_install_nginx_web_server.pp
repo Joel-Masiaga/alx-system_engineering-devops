@@ -1,3 +1,7 @@
+# This Puppet manifest installs and configures Nginx to:
+# 1. Serve "Hello World!" at the root (/)
+# 2. Redirect /redirect_me with a 301 status code
+
 package { 'nginx':
   ensure => installed,
 }
