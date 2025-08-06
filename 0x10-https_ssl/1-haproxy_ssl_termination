@@ -1,5 +1,3 @@
-# 1-haproxy_ssl_termination
-
 global
 log /dev/log local0
 log /dev/log local1 notice
@@ -19,7 +17,7 @@ timeout server 50000ms
 # Frontend for HTTPS (SSL termination)
 
 frontend https_front
-bind \*:443 ssl crt /etc/letsencrypt/live/www.YOUR_DOMAIN/fullchain.pem /etc/letsencrypt/live/www.YOUR_DOMAIN/privkey.pem
+bind \*:443 ssl crt /etc/letsencrypt/live/www.YOUR_DOMAIN/fullchain.pem /etc/letsencrypt/live/www.holberton.online/privkey.pem
 mode http
 option forwardfor
 http-request set-header X-Forwarded-Proto https
