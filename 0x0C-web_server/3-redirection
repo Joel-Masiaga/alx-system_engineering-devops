@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
+# Configures Nginx to redirect /redirect_me with a 301 status code
 
+# Update packages and install Nginx
 apt-get update
 apt-get install -y nginx
 
+# Configure Nginx with redirection
 cat > /etc/nginx/sites-available/default <<EOF
 server {
     listen 80 default_server;
@@ -23,4 +26,5 @@ server {
 }
 EOF
 
+# Restart Nginx to apply changes
 service nginx restart
