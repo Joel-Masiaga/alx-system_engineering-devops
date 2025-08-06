@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Installs and configures HAProxy with roundrobin load balancing
+
+# Install HAProxy
+apt-get update
+apt-get install -y haproxy
+
+# Configure HAProxy
+cat > /etc/haproxy/haproxy.cfg <<EOF
+global
+    daemon
+    maxconn 256
+
+defaults
+    mode http
+    timeout connect 5000ms
+    timeout client 50000ms
+    timeout server 50000ms
+
+frontend http-in
+    bind *:80
+    default_backend servers
+
+backend servers
+    balance roundrobin
+    server $(hostname -s)-web-01 $(hostname -s)-web-01:80 check
+    server $(hostname -s)-web-02 $(hostname -s)-web-02:80 check
+
+listen stats
+    bind *:8080
+    stats enable
+    stats uri /
+    stats show-legends
+EOF
+
+# Enable and start HAProxy
+systemctl enable haproxy
+service haproxy restart
